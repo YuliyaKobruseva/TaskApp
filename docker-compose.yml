@@ -20,7 +20,7 @@ services:
     depends_on:
       - mongodb
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongodb/taskmanagement?authSource=admin
+      SPRING_DATA_MONGODB_URI: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongodb/taskApp?authSource=admin
       SPRING_DATA_MONGODB_USERNAME: ${MONGO_USER}
       SPRING_DATA_MONGODB_PASSWORD: ${MONGO_PASSWORD}
 

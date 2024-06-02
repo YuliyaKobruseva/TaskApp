@@ -35,18 +35,3 @@ public class TaskController {
         return ResponseEntity.ok(tasks);
     }
 }
-
-
-/*
-    @PostMapping
-    public ResponseEntity<TaskDto> createTask(@Valid @RequestBody CreateTaskRequest request) {
-        TaskDto task = createTaskUseCase.createTask(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(task);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<TaskDto>> getTasks() {
-        List<TaskDto> tasks = getTasksUseCase.getTasks();
-        return ResponseEntity.ok(tasks);
-    }
-}*/
