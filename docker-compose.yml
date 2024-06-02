@@ -1,0 +1,28 @@
+services:
+  mongodb:
+    image: mongo:latest
+    volumes:
+      - ./mongod.conf:/etc/mongo/mongod.conf
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    ports:
+      - "27017:27017"
+    command: ["mongod", "--config", "/etc/mongo/mongod.conf"]
+
+  task-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongodb/taskmanagement?authSource=admin
+      SPRING_DATA_MONGODB_USERNAME: ${MONGO_USER}
+      SPRING_DATA_MONGODB_PASSWORD: ${MONGO_PASSWORD}
+
+volumes:
+  mongodb_data:
