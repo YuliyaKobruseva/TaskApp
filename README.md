@@ -29,7 +29,7 @@ TaskApp is a task management application that allows users to create new tasks a
 
 1. **Clone the repository**:
     ```sh
-    git clone <repository-url>
+    git clone https://github.com/YuliyaKobruseva/TaskApp.git
     cd task-app
     ```
 
