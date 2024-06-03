@@ -18,12 +18,9 @@ TaskApp is a task management application that allows users to create new tasks a
 
 ## Prerequisites
 
-- Java 17
 - Docker
 - Docker Compose
-- Gradle
-- MongoDB
-- Postman (optional)
+- Postman (optional, testing purposes)
 
 ## Building and Running the Application
 
@@ -33,11 +30,17 @@ TaskApp is a task management application that allows users to create new tasks a
     cd task-app
     ```
 
-2. **Run the `run.bat` script**:
+2. **Run the `run.bat` script**:\n
    This script will stop existing containers, build and start the new containers.
     ```sh
     ./run.bat
     ```
+   If you are using a Unix-based system, you can run the following commands:
+    ```sh
+    docker-compose down -v
+    docker-compose up --build -d
+    ```
+   Remove the `-v` flag if you want to keep the database data after stopping the containers.
 
 3. **Access the application**:
     - The API will be available at `http://localhost:8080`
