@@ -2,10 +2,11 @@ package com.example.taskApp.interfaces.rest;
 
 import com.example.taskApp.app.services.GetTasksService;
 import com.example.taskApp.app.services.NewTaskService;
+import com.example.taskApp.domain.exceptions.TaskNotFoundException;
+import com.example.taskApp.domain.exceptions.TaskSaveException;
 import com.example.taskApp.domain.model.Task;
 import com.example.taskApp.interfaces.rest.dto.NewTaskRequest;
 import com.example.taskApp.interfaces.rest.dto.TaskResponse;
-import com.example.taskApp.util.TestRequestModels;
 import com.example.taskApp.util.TestTaskModel;
 import com.example.taskApp.util.TestResponseModels;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,7 +52,8 @@ class TaskControllerTest {
     @Test
     public void given_valid_request_when_createTask_then_task_is_created() throws Exception {
         // Arrange
-        NewTaskRequest request = objectMapper.readValue(new ClassPathResource("jsons/newTaskRequest.json").getFile(), NewTaskRequest.class);
+        NewTaskRequest request = objectMapper.readValue(new ClassPathResource("jsons/newTaskRequest.json").getFile(),
+                NewTaskRequest.class);
         Task expectedTask = TestTaskModel.createExpectedTask(request);
 
         when(newTaskService.createTask(any(NewTaskRequest.class))).thenReturn(expectedTask);
@@ -80,6 +82,35 @@ class TaskControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(taskResponses)));
+    }
+
+    @Test
+    public void when_getAllTasks_then_return_404_if_no_tasks() throws Exception {
+        // Arrange
+        when(getTasksService.getTasks()).thenThrow(new TaskNotFoundException("No tasks found"));
+
+        // Act & Assert
+        mockMvc.perform(get("/tasks/all")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("No tasks found"));
+    }
+
+    @Test
+    public void given_valid_request_when_createTask_then_return_500_on_save_error() throws Exception {
+        // Arrange
+        NewTaskRequest request = objectMapper.readValue(new ClassPathResource("jsons/newTaskRequest.json").getFile(),
+                NewTaskRequest.class);
+
+        when(newTaskService.createTask(any(NewTaskRequest.class))).thenThrow(
+                new TaskSaveException("Failed to save task to database", new RuntimeException()));
+
+        // Act & Assert
+        mockMvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().string("Failed to save task to database"));
     }
 
 }

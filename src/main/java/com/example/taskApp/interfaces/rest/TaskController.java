@@ -10,9 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -29,7 +29,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@Valid @RequestBody NewTaskRequest request) {
+    public ResponseEntity<Task> createTask(@Validated @RequestBody NewTaskRequest request) {
         logger.debug("Received request to create task: {}", request);
         Task task = newTaskService.createTask(request);
         logger.info("Task created successfully with id: {}", task.getId());

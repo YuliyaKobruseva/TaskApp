@@ -1,6 +1,7 @@
 package com.example.taskApp.app.services.interfaces;
 
 import com.example.taskApp.app.services.GetTasksService;
+import com.example.taskApp.domain.exceptions.TaskNotFoundException;
 import com.example.taskApp.domain.model.Task;
 import com.example.taskApp.domain.repository.TaskRepository;
 import com.example.taskApp.interfaces.rest.TaskController;
@@ -25,6 +26,10 @@ public class IGetTasksService implements GetTasksService {
     public List<TaskResponse> getTasks() {
         logger.debug("Fetching all tasks");
         List<Task> tasks = taskRepository.findAll();
+        if (tasks.isEmpty()) {
+            logger.error("No tasks found");
+            throw new TaskNotFoundException("No tasks found");
+        }
         List<TaskResponse> taskResponses = tasks.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());

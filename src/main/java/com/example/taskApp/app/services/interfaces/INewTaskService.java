@@ -1,6 +1,7 @@
 package com.example.taskApp.app.services.interfaces;
 
 import com.example.taskApp.app.services.NewTaskService;
+import com.example.taskApp.domain.exceptions.TaskSaveException;
 import com.example.taskApp.domain.model.Task;
 import com.example.taskApp.domain.model.enums.TaskStatus;
 import com.example.taskApp.domain.repository.TaskRepository;
@@ -21,7 +22,9 @@ public class INewTaskService implements NewTaskService {
     }
 
     public Task createTask(NewTaskRequest request) {
+
         logger.debug("Creating task with title: {}", request.getTitle());
+        try {
         Task task = Task.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
@@ -32,5 +35,9 @@ public class INewTaskService implements NewTaskService {
         Task savedTask = taskRepository.save(task);
         logger.debug("Task created with id: {}", savedTask.getId());
         return savedTask;
+        } catch (Exception e) {
+            logger.error("Error saving task to database", e);
+            throw new TaskSaveException("Failed to save task to database", e);
+        }
     }
 }
